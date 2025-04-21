@@ -7,39 +7,36 @@ function Mid() {
 
     const resp = await fetch("https://dummyjson.com/recipes");
     const respjson = await resp.json();
-    // console.log(respjson.recipes);
     setRecipe(respjson.recipes);
+
+    console.log(respjson.recipes);
+
+    setlength(respjson.recipes.length);
+    for (let i = 0; i <= respjson.recipes.length; i++) {
+      console.log(respjson.recipes[i].ingredients);
+      // working;
+      setingredient(respjson.recipes[i].ingredients);
+    }
   };
 
   const [Recipe, setRecipe] = useState([]);
+  const [ingredients, setingredient] = useState([]);
+  const [length, setlength] = useState();
   useEffect(() => {
     handleRecipe();
+    // console.log("length = "+length);
   }, []);
-
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  console.log(Recipe);
 
   return (
     <div>
-      <div className=" grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 text-center justify-items-center ">
+      <div
+        className=" grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 text-center justify-items-center"
+        style={{ backgroundColor: "gray", color: "white" }}
+      >
         {Recipe.map((val, ind) => (
-          <div key={ind} className="border-1 mt-5">
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <div>
-                <p className="absolute top-52 left-52 text-amber-400">
-                  {val.ingredients}
-                </p>
-              </div>
-            </Modal>
+          <div key={ind} className="border-1 mt-5 m-0 ">
             <img
-              className="object-cover w-70 h-50 "
+              className="object-cover w-100 h-50 "
               src={val.image}
               alt="some issue"
             />
@@ -54,11 +51,57 @@ function Mid() {
             </div>
             <p>Time to Have : {val.mealType}</p>
             <div className="flex justify-between px-3 border-b-1 border-black-500">
-              <button className="btn btn-primary" onClick={handleOpen}>
-                Reciepy
+              <button
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+              >
+                Ingredients
               </button>
-              <button className="btn btn-primary">Instruction</button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  console.log("instruction " + val.ingredients);
+                }}
+              >
+                Instruction
+              </button>
             </div>
+            <div
+              className="modal fade"
+              id="exampleModal"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1
+                      className="modal-title fs-5 text-center"
+                      id="exampleModalLabel"
+                    >
+                      {val.name}
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                
+                    {val.instructions.map((instruction, index) => (
+                      <div key={index}>
+                        <p>{instruction}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* <p className="text-start p-2 ">{val.ingredients}</p> */}
           </div>
         ))}
       </div>
